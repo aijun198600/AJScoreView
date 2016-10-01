@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'AJScoreView_Example' do
+  pod 'AJScoreView', :path => '../'
+
+  target 'AJScoreView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

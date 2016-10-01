@@ -1,0 +1,6 @@
+framework module AJScoreView {
+  umbrella header "AJScoreView-umbrella.h"
+
+  export *
+  module * { export * }
+}

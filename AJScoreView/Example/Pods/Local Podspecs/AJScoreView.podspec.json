@@ -1,0 +1,22 @@
+{
+  "name": "AJScoreView",
+  "version": "0.1.0",
+  "summary": "A short description of AJScoreView.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/AJScoreView",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "aijunx": "aijun198600@126.com"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/AJScoreView.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "AJScoreView/Classes/**/*"
+}

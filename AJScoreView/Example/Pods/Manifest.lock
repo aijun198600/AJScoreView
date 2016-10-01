@@ -1,0 +1,16 @@
+PODS:
+  - AJScoreView (0.1.0)
+
+DEPENDENCIES:
+  - AJScoreView (from `../`)
+
+EXTERNAL SOURCES:
+  AJScoreView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  AJScoreView: c327fb9442de449f7a5afb2c51eee8facf5d7b09
+
+PODFILE CHECKSUM: a86f799f991d41f09217db49e6bc21a6a8fddabb
+
+COCOAPODS: 1.0.0
