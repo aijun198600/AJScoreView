@@ -15,8 +15,9 @@
 		9250A2BAD14E8E0414801D0FEAFC02EE /* Pods-AJScoreView_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F2AA370C605B08D4E65EC6C4B891C0F9 /* Pods-AJScoreView_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B1CD62FECC91B837BB517D4E74971AB8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		EC4C15CA144A900883EC86D7A7CECB53 /* Pods-AJScoreView_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 55293A3CFB80907FE7C6793AC1A45F72 /* Pods-AJScoreView_Tests-dummy.m */; };
-		F48781DDBACBCBC6F13BF29E68FD3A85 /* ReplaceMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 614618121635085BB48F13EA69E7A29C /* ReplaceMe.m */; };
 		FDC99F2A7B5C301B6B10BD735074C5F0 /* Pods-AJScoreView_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A1D42E0260BE05DBE1A98E0213C3DF90 /* Pods-AJScoreView_Example-dummy.m */; };
+		FF9131A81DA3AA3F00012C42 /* AJScoreView.h in Headers */ = {isa = PBXBuildFile; fileRef = FF9131A61DA3AA3F00012C42 /* AJScoreView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FF9131A91DA3AA3F00012C42 /* AJScoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = FF9131A71DA3AA3F00012C42 /* AJScoreView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +41,6 @@
 		4756DA8C1B97A350F1AB3371B60D91F7 /* Pods-AJScoreView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AJScoreView_Example.release.xcconfig"; sourceTree = "<group>"; };
 		47BFC71CC468C9BCD35160B9DC3BB093 /* Pods-AJScoreView_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AJScoreView_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		55293A3CFB80907FE7C6793AC1A45F72 /* Pods-AJScoreView_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AJScoreView_Tests-dummy.m"; sourceTree = "<group>"; };
-		614618121635085BB48F13EA69E7A29C /* ReplaceMe.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ReplaceMe.m; sourceTree = "<group>"; };
 		7204E40714988CA5D41C94D2FC35D475 /* Pods-AJScoreView_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-AJScoreView_Tests.modulemap"; sourceTree = "<group>"; };
 		78C1283EF7A865177384AEC485839A8B /* AJScoreView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AJScoreView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D56CAA5453BC7ACFAC11FEB2E415D1C /* Pods-AJScoreView_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AJScoreView_Tests-resources.sh"; sourceTree = "<group>"; };
@@ -62,6 +62,8 @@
 		F2AA370C605B08D4E65EC6C4B891C0F9 /* Pods-AJScoreView_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AJScoreView_Example-umbrella.h"; sourceTree = "<group>"; };
 		F4038D51904458D5FA66FEDC09D936F4 /* AJScoreView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = AJScoreView.modulemap; sourceTree = "<group>"; };
 		F6BA9B7C4A03F51BDDA7BAB58CAD0E19 /* Pods-AJScoreView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AJScoreView_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		FF9131A61DA3AA3F00012C42 /* AJScoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AJScoreView.h; sourceTree = "<group>"; };
+		FF9131A71DA3AA3F00012C42 /* AJScoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AJScoreView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +123,8 @@
 		13A952E9A622F15F31D3E87A091057DF /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				614618121635085BB48F13EA69E7A29C /* ReplaceMe.m */,
+				FF9131A61DA3AA3F00012C42 /* AJScoreView.h */,
+				FF9131A71DA3AA3F00012C42 /* AJScoreView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C32350FF3A0E85E7BD70E0E355F59D4 /* AJScoreView-umbrella.h in Headers */,
+				FF9131A81DA3AA3F00012C42 /* AJScoreView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,8 +357,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF9131A91DA3AA3F00012C42 /* AJScoreView.m in Sources */,
 				736360D6A3AB4B00EC3A8DD97F2FD2A4 /* AJScoreView-dummy.m in Sources */,
-				F48781DDBACBCBC6F13BF29E68FD3A85 /* ReplaceMe.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

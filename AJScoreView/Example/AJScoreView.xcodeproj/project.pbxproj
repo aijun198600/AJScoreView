@@ -23,6 +23,7 @@
 		6F14630DE4532BE0EED2376D /* Pods_AJScoreView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C171DA94E177F3F6E4CE8B5B /* Pods_AJScoreView_Example.framework */; };
 		7A6FBD0830C7265A282E0442 /* Pods_AJScoreView_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F036094A6FE8EBA089FF13 /* Pods_AJScoreView_Tests.framework */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		FF47815D1DA49C340036C980 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF47815C1DA49C340036C980 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		C171DA94E177F3F6E4CE8B5B /* Pods_AJScoreView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AJScoreView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D03014F19AAA273D0E7E358D /* Pods-AJScoreView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AJScoreView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AJScoreView_Example/Pods-AJScoreView_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		F3910018292A33F70B28C2D1 /* Pods-AJScoreView_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AJScoreView_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AJScoreView_Tests/Pods-AJScoreView_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		FF47815C1DA49C340036C980 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 				6003F59C195388D20070C39A /* AJAppDelegate.h */,
 				6003F59D195388D20070C39A /* AJAppDelegate.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
+				FF47815C1DA49C340036C980 /* LaunchScreen.storyboard */,
 				6003F5A5195388D20070C39A /* AJViewController.h */,
 				6003F5A6195388D20070C39A /* AJViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
@@ -277,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
+				FF47815D1DA49C340036C980 /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
@@ -512,7 +516,6 @@
 			baseConfigurationReference = D03014F19AAA273D0E7E358D /* Pods-AJScoreView_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AJScoreView/AJScoreView-Prefix.pch";
 				INFOPLIST_FILE = "AJScoreView/AJScoreView-Info.plist";
@@ -528,7 +531,6 @@
 			baseConfigurationReference = 0EE7CA4694BA3FD8825F3102 /* Pods-AJScoreView_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AJScoreView/AJScoreView-Prefix.pch";
 				INFOPLIST_FILE = "AJScoreView/AJScoreView-Info.plist";
