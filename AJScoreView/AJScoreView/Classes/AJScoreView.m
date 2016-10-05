@@ -254,10 +254,8 @@
 }
 
 - (void)setPath:(UIBezierPath *)path{
-    if (self.type == AJScoreViewCustomType) {
-        _path = path;
-        [self setNeedsDisplay];
-    }
+    _path = path;
+    [self setNeedsDisplay];
 }
 
 #pragma mark - getSharpPath methods
