@@ -190,7 +190,7 @@
 }
 
 - (void)setPadding:(CGFloat)padding{
-    if (_padding != padding && _type != AJScoreViewAlignmentCenter) {
+    if (_padding != padding && _alignment != AJScoreViewAlignmentCenter) {
         if (padding < 0) {
             _padding = 0;
         }else{
