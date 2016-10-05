@@ -9,14 +9,16 @@
 #import "AJScoreView.h"
 
 @implementation AJScoreView {
-    /**
-     *  有动画的时候，最后赋予的值
-     */
-    CGFloat toValue;
-    /**
-     *  有动画的时候，每一次增加的值
-     */
-    CGFloat addValue;
+    
+    CAShapeLayer *unSelectedLayer;
+    CAShapeLayer *selectedLayer;
+    CALayer *unSelectedMaskLayer;
+    CALayer *selectedMaskLayer;
+    
+    CGRect pathBounds;
+    CGRect totoalPathBounds;
+    CGFloat scale;
+    CGFloat scalePadding;
     
 }
 
@@ -51,30 +53,36 @@
     _selectedColor = _selectedColor?_selectedColor:[UIColor yellowColor];
     _unselectedColor = _unselectedColor?_unselectedColor:[UIColor grayColor];
     
+    unSelectedLayer = [CAShapeLayer layer];
+    selectedLayer = [CAShapeLayer layer];
+    selectedMaskLayer = [CALayer layer];
+    selectedMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
+    unSelectedMaskLayer = [CALayer layer];
+    unSelectedMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
+    
+    [self.layer addSublayer:unSelectedLayer];
+    [self.layer addSublayer:selectedLayer];
+    
+    [self setNeedsLayout];
+    
 }
 
-#pragma mark - Draw methods
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+#pragma mark - Layout subviews 
+- (void)layoutSubviews {
     
-    CGRect pathBounds;
-    if (_path) {
-        
-        pathBounds = _path.bounds;
-        [_path applyTransform:CGAffineTransformMakeTranslation(-pathBounds.origin.x,-pathBounds.origin.y)];
-        pathBounds = _path.bounds;
-        
-    }else{
-        return;
-    }
+    [super layoutSubviews];
     
+    pathBounds = _path.bounds;
+    [_path applyTransform:CGAffineTransformMakeTranslation(-pathBounds.origin.x,-pathBounds.origin.y)];
+    pathBounds = _path.bounds;
+    
+    CGRect rect = self.bounds;
     CGRect drawRect = CGRectMake(_insert.left,_insert.top, rect.size.width-(_insert.left+_insert.right), rect.size.height-(_insert.top+_insert.bottom));
     if (_padding*(_number-1) >= drawRect.size.width) {
         return;
     }
     
     //缩放百分比
-    CGFloat scale;
     CGFloat padding;
     if (_alignment == AJScoreViewAlignmentCenter) {
         padding = 0.0;
@@ -86,6 +94,7 @@
     }else{
         scale = (drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number;
     }
+    
     //确定间隙
     CGFloat scalePadding;
     if (_alignment == AJScoreViewAlignmentCenter) {
@@ -105,7 +114,8 @@
     }
     
     [totalPath applyTransform:CGAffineTransformMakeScale(scale,scale)];
-    //修正当前的x,y值
+    
+    //修正当前Alignment的x,y值
     CGFloat refixY = (drawRect.size.height-totalPath.bounds.size.height)/2.0+drawRect.origin.y;
     CGFloat refixX;
     if (_alignment == AJScoreViewAlignmentRight) {
@@ -114,8 +124,17 @@
         refixX = drawRect.origin.x;
     }
     [totalPath applyTransform:CGAffineTransformMakeTranslation(refixX,refixY)];
-    [_unselectedColor setFill];
-    [totalPath fill];
+    
+    //确定背景颜色
+    unSelectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+    unSelectedLayer.path = totalPath.CGPath;
+//    unSelectedLayer.fillColor = _unselectedColor.CGColor;
+    unSelectedLayer.fillColor = _selectedColor.CGColor;
+    
+    selectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+    selectedLayer.path = totalPath.CGPath;
+//    selectedLayer.fillColor = _selectedColor.CGColor;
+    selectedLayer.fillColor = _unselectedColor.CGColor;
     
     //取值的范围
     CGFloat numberOfSharp = _value/((_maximumValue-_minimumValue)/_number);
@@ -129,25 +148,121 @@
     }else{
         selectRect = CGRectMake(selectW+totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
     }
-    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:selectRect];
-    UIBezierPath* rectanglePath2 =[UIBezierPath bezierPath];
-    [rectanglePath2 appendPath:rectanglePath];
-    [totalPath appendPath:rectanglePath];
-    [totalPath setUsesEvenOddFillRule:YES];
-    [totalPath addClip];
-    [totalPath appendPath:rectanglePath2];
-    [totalPath setUsesEvenOddFillRule:YES];
-    [totalPath addClip];
-    [_selectedColor setFill];
-    [totalPath fill];
+    
+    selectedMaskLayer.frame = selectRect;
+    selectedLayer.mask = selectedMaskLayer;
+    
+    
+    
+    //确定遮罩层的大小
+//    [self updateMaskLayers];
     
 }
+
+- (void)updateMaskLayers {
+    
+    
+    
+    
+    
+    
+}
+
+#pragma mark - Draw methods
+//- (void)drawRect:(CGRect)rect {
+//    // Drawing code
+//    
+//    CGRect pathBounds;
+//    if (_path) {
+//        
+//        pathBounds = _path.bounds;
+//        [_path applyTransform:CGAffineTransformMakeTranslation(-pathBounds.origin.x,-pathBounds.origin.y)];
+//        pathBounds = _path.bounds;
+//        
+//    }else{
+//        return;
+//    }
+//    
+//    CGRect drawRect = CGRectMake(_insert.left,_insert.top, rect.size.width-(_insert.left+_insert.right), rect.size.height-(_insert.top+_insert.bottom));
+//    if (_padding*(_number-1) >= drawRect.size.width) {
+//        return;
+//    }
+//    
+//    //缩放百分比
+//    CGFloat scale;
+//    CGFloat padding;
+//    if (_alignment == AJScoreViewAlignmentCenter) {
+//        padding = 0.0;
+//    }else{
+//        padding = _padding;
+//    }
+//    if ((drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number > (drawRect.size.height/pathBounds.size.height)) {
+//        scale = drawRect.size.height/pathBounds.size.height;
+//    }else{
+//        scale = (drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number;
+//    }
+//    //确定间隙
+//    CGFloat scalePadding;
+//    if (_alignment == AJScoreViewAlignmentCenter) {
+//        scalePadding = (drawRect.size.width-pathBounds.size.width*scale*_number)/(_number-1)/scale;
+//    }else{
+//        scalePadding = _padding/scale;
+//    }
+//    
+//    UIBezierPath *totalPath = [UIBezierPath bezierPath];
+//    for (int i=0; i<_number; i++) {
+//        
+//        UIBezierPath *copyPath = [UIBezierPath bezierPath];
+//        [copyPath appendPath:_path];
+//        [copyPath applyTransform:CGAffineTransformMakeTranslation((pathBounds.size.width+scalePadding)*i,0)];
+//        
+//        [totalPath appendPath:copyPath];
+//    }
+//    
+//    [totalPath applyTransform:CGAffineTransformMakeScale(scale,scale)];
+//    //修正当前的x,y值
+//    CGFloat refixY = (drawRect.size.height-totalPath.bounds.size.height)/2.0+drawRect.origin.y;
+//    CGFloat refixX;
+//    if (_alignment == AJScoreViewAlignmentRight) {
+//        refixX = drawRect.size.width - totalPath.bounds.size.width+drawRect.origin.x;
+//    }else{
+//        refixX = drawRect.origin.x;
+//    }
+//    [totalPath applyTransform:CGAffineTransformMakeTranslation(refixX,refixY)];
+//    [_unselectedColor setFill];
+//    [totalPath fill];
+//    
+//    //取值的范围
+//    CGFloat numberOfSharp = _value/((_maximumValue-_minimumValue)/_number);
+//    NSInteger integer = floor(numberOfSharp);
+//    CGFloat remainValue = numberOfSharp - integer;
+//    CGRect totoalPathBounds = totalPath.bounds;
+//    CGFloat selectW = (pathBounds.size.width*integer + scalePadding*integer + pathBounds.size.width*remainValue)*scale;
+//    CGRect selectRect;
+//    if (_alignment == AJScoreViewAlignmentRight){
+//        selectRect = CGRectMake(totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
+//    }else{
+//        selectRect = CGRectMake(selectW+totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
+//    }
+//    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:selectRect];
+//    UIBezierPath* rectanglePath2 =[UIBezierPath bezierPath];
+//    [rectanglePath2 appendPath:rectanglePath];
+//    [totalPath appendPath:rectanglePath];
+//    [totalPath setUsesEvenOddFillRule:YES];
+//    [totalPath addClip];
+//    [totalPath appendPath:rectanglePath2];
+//    [totalPath setUsesEvenOddFillRule:YES];
+//    [totalPath addClip];
+//    [_selectedColor setFill];
+//    [totalPath fill];
+//    
+//}
 
 #pragma mark - Setter methods
 - (void)setFrame:(CGRect)frame{
     if (!CGRectEqualToRect(frame, self.frame)) {
         [super setFrame:frame];
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
@@ -167,7 +282,7 @@
         if (_type == AJScoreViewCustomType) {
             return;
         }
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
     
 }
@@ -175,14 +290,14 @@
 - (void)setAlignment:(AJScoreViewAlignment)alignment{
     if (_alignment != alignment) {
         _alignment = alignment;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setInsert:(UIEdgeInsets)insert{
     if (!UIEdgeInsetsEqualToEdgeInsets(insert, self.insert)) {
         _insert = insert;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
@@ -193,14 +308,14 @@
         }else{
             _padding = padding;
         }
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setMinimumValue:(CGFloat)minimumValue{
     if (_minimumValue != minimumValue && minimumValue <= _maximumValue) {
         _minimumValue = minimumValue;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
     
 }
@@ -208,7 +323,7 @@
 - (void)setMaximumValue:(CGFloat)maximumValue{
     if (_maximumValue != maximumValue && maximumValue >= _minimumValue) {
         _maximumValue = maximumValue;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
@@ -221,40 +336,20 @@
         }else{
             _value = value;
         }
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setValue:(CGFloat)value animated:(BOOL)animated{
     if(_value != value){
         if (animated) {
-            CGFloat oldValue = self.value;
-            toValue = value;
-            addValue  = (value-oldValue)/30.0;
-            CADisplayLink *timer = [CADisplayLink displayLinkWithTarget:self
-                                                               selector:@selector(updateDisplay:)];
-            [timer addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+            [self setValue:value];
         }else{
             [self setValue:value];
         }
     }
 }
 
-/**
- *  设置值的动画
- *
- *  @param timer 计时器
- */
-- (void)updateDisplay:(CADisplayLink *)timer{
-    if (self.value + addValue >= toValue) {
-        self.value = toValue;
-        timer.paused = YES;
-        [timer invalidate];
-        timer = nil;
-    }else{
-        self.value = self.value + addValue;
-    }
-}
 
 - (void)setNumber:(NSInteger)number{
     if (_number != number) {
@@ -263,27 +358,27 @@
         }else{
             _number = number;
         }
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setSelectedColor:(UIColor *)selectedColor{
     if (![_selectedColor isEqual:selectedColor]) {
         _selectedColor = selectedColor;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setUnselectedColor:(UIColor *)unselectedColor{
     if (![_unselectedColor isEqual:unselectedColor]) {
         _unselectedColor = unselectedColor;
-        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
 - (void)setPath:(UIBezierPath *)path{
     _path = path;
-    [self setNeedsDisplay];
+    [self setNeedsLayout];
 }
 
 #pragma mark - getSharpPath methods
