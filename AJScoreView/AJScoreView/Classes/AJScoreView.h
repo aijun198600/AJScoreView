@@ -84,7 +84,7 @@ typedef enum {
  *  @param value    评分值
  *  @param animated 改变值是否有动画,YES则显示动画，动画时间0.3秒
  */
-//- (void)setValue:(CGFloat)value animated:(BOOL)animated;
+- (void)setValue:(CGFloat)value animated:(BOOL)animated;
 
 
 @end

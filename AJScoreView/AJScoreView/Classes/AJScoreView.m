@@ -8,18 +8,15 @@
 
 #import "AJScoreView.h"
 
-@implementation AJScoreView
-{
-    
-    CAShapeLayer *unSelectedLayer;
-    CAShapeLayer *selectedLayer;
-    CALayer *unSelectedMaskLayer;
-    CALayer *selectedMaskLayer;
-    
-    CGRect pathBounds;
-    CGRect totoalPathBounds;
-    CGFloat scale;
-    CGFloat scalePadding;
+@implementation AJScoreView {
+    /**
+     *  有动画的时候，最后赋予的值
+     */
+    CGFloat toValue;
+    /**
+     *  有动画的时候，每一次增加的值
+     */
+    CGFloat addValue;
     
 }
 
@@ -225,6 +222,37 @@
             _value = value;
         }
         [self setNeedsDisplay];
+    }
+}
+
+- (void)setValue:(CGFloat)value animated:(BOOL)animated{
+    if(_value != value){
+        if (animated) {
+            CGFloat oldValue = self.value;
+            toValue = value;
+            addValue  = (value-oldValue)/30.0;
+            CADisplayLink *timer = [CADisplayLink displayLinkWithTarget:self
+                                                               selector:@selector(updateDisplay:)];
+            [timer addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+        }else{
+            [self setValue:value];
+        }
+    }
+}
+
+/**
+ *  设置值的动画
+ *
+ *  @param timer 计时器
+ */
+- (void)updateDisplay:(CADisplayLink *)timer{
+    if (self.value + addValue >= toValue) {
+        self.value = toValue;
+        timer.paused = YES;
+        [timer invalidate];
+        timer = nil;
+    }else{
+        self.value = self.value + addValue;
     }
 }
 

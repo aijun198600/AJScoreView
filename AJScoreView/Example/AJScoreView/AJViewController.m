@@ -193,7 +193,7 @@
 }
 
 - (void)changeValueAnimation{
-    [scoreView setValue:5.0];
+    [scoreView setValue:5.0 animated:YES];
 }
 
 @end
