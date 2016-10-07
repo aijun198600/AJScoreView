@@ -1,10 +1,32 @@
 # AJScoreView
 自定义评分控件，支持星型、心型以及自定义的UIBezierPath形状，可以自定义各种属性，支持storyboard设置和编辑事件。
 
-#### 截图
+### 截图
 ![screen_shot_1](./img/screen_2.png)
 
-#### 使用示例
+### 安装(Install)
+
+#### CocoaPods支持
+
+在Podfile增加AJScoreView库
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
+
+target 'TargetName' do
+    pod 'AJScoreView'
+end
+```
+
+然后Podfile文件的目录运行命令安装:
+
+```ruby
+pod install
+```
+Enjoy it!
+
+### 使用示例
 
 ```objective-c
     scoreView= [[AJScoreView alloc] initWithFrame:CGRectMake(5, 40,250,50)];
@@ -52,7 +74,7 @@ scoreView.path = [self twitterPath];
 
 ```
 
-#### 参数说明
+### 参数说明
 
 - type
 
@@ -117,7 +139,7 @@ scoreView.path = [self twitterPath];
 
 当类型为AJScoreViewCustomType类型的时候，可以通过path赋予不同的形状，如果是星星或心型则会使用自带的path。并且只有先赋值type为AJScoreViewCustomType才能赋值path，否则赋值无效。建议使用PaintCode来画图生成Object-C代码。
 
-#### 文章说明
+### 文章说明
 [如何开发一个评分控件(一)](http://www.jianshu.com/p/ea74c10a03c2)
 
 
