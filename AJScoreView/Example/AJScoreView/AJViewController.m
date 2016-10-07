@@ -24,7 +24,8 @@
     
     scoreView= [[AJScoreView alloc] initWithFrame:CGRectMake(5, 40,250,50)];
     scoreView.backgroundColor = [UIColor greenColor];
-    scoreView.editing = YES;
+    scoreView.enabled = YES;
+    [scoreView addTarget:self action:@selector(valueChaneged) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:scoreView];
     
     UIButton *btnChang = [[UIButton alloc] initWithFrame:CGRectMake(5, 100, 200, 30)];
@@ -105,6 +106,10 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)valueChaneged{
+    NSLog(@"------>value:%@",@(scoreView.value));
 }
 
 - (void)changeSharp{

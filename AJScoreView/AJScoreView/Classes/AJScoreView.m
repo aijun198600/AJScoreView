@@ -47,7 +47,6 @@
     _type = _type?_type:AJScoreViewStarType;
     _path = _path?_path:[self obtainStarPath];
     _alignment = _alignment?_alignment:AJScoreViewAlignmentLeft;
-    _editing = _editing?_editing:YES;
     _selectedColor = _selectedColor?_selectedColor:[UIColor yellowColor];
     _unselectedColor = _unselectedColor?_unselectedColor:[UIColor grayColor];
     
@@ -281,6 +280,62 @@
 - (void)setPath:(UIBezierPath *)path{
     _path = path;
     [self setNeedsLayout];
+}
+
+#pragma mark - Eevent handle
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super beginTrackingWithTouch:touch withEvent:event];
+    [self moveHandle:touch];
+    return self.enabled;
+}
+
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super continueTrackingWithTouch:touch withEvent:event];
+    [self moveHandle:touch];
+    return self.enabled;
+}
+
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super endTrackingWithTouch:touch withEvent:event];
+}
+
+- (void)moveHandle:(UITouch *)touch {
+    
+    if (self.enabled == YES) {
+        
+        CGPoint point = [touch locationInView:self];
+        if (CGRectContainsPoint(self.bounds, point)) {
+            CGFloat selectW;
+            if (_alignment == AJScoreViewAlignmentRight) {
+                if (point.x <= totoalPathBounds.origin.x) {
+                    selectW = totoalPathBounds.size.width;
+                }else if (point.x >= totoalPathBounds.origin.x + totoalPathBounds.size.width) {
+                    selectW = 0.0;
+                }else {
+                    selectW = totoalPathBounds.origin.x + totoalPathBounds.size.width - point.x;
+                }
+            }else {
+                if (point.x <= totoalPathBounds.origin.x) {
+                    selectW = 0.0;
+                }else if (point.x >= totoalPathBounds.origin.x + totoalPathBounds.size.width) {
+                    selectW = totoalPathBounds.size.width;
+                }else {
+                    selectW = point.x - totoalPathBounds.origin.x;
+                }
+            }
+            
+            NSInteger i = floor(selectW / (scaleRect.size.width + padding));
+            CGFloat remainValue = (selectW - i * (scaleRect.size.width + padding)) / scaleRect.size.width;
+            CGFloat value = i + remainValue;
+            if (value != _value) {
+                self.value = i + remainValue;
+                [self sendActionsForControlEvents:UIControlEventValueChanged];
+            }
+            
+        }
+        
+    }
+    
 }
 
 #pragma mark - getSharpPath methods

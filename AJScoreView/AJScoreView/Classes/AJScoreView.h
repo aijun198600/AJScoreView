@@ -27,7 +27,7 @@ typedef enum {
 }AJScoreViewAlignment;
 
 
-@interface AJScoreView : UIView
+@interface AJScoreView : UIControl
 
 /**
  *  评分组件的类型
@@ -45,10 +45,6 @@ typedef enum {
  *  各个形状之间的间隙，必须大于0.1，默认为2.0。如果对齐方式为AJScoreViewAlignmentCenter，则此设置无效
  */
 @property (nonatomic, assign) CGFloat padding;
-/**
- *  评分组件是否可以点击编辑，默认为NO
- */
-@property (nonatomic, assign) BOOL editing;
 /**
  *  评分组件的最小值，minimumValue的值不能大于maximumValue
  */
