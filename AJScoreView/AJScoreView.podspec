@@ -30,13 +30,13 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '7.0'
 
-  s.source_files = 'AJScoreView/Classes/*.{h,m}'
+  s.source_files = 'AJScoreView/AJScoreView/Classes/*.{h,m}'
   
   # s.resource_bundles = {
   #   'AJScoreView' => ['AJScoreView/Assets/*.png']
   # }
 
-  s.public_header_files = 'AJScoreView/Classes/*.h'
+  s.public_header_files = 'AJScoreView/AJScoreView/Classes/*.h'
   s.frameworks = 'UIKit'
   s.requires_arc = true
   # s.dependency 'AFNetworking', '~> 2.3'
