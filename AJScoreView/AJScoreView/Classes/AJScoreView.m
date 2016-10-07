@@ -12,13 +12,11 @@
     
     CAShapeLayer *unSelectedLayer;
     CAShapeLayer *selectedLayer;
-    CALayer *unSelectedMaskLayer;
-    CALayer *selectedMaskLayer;
+    CALayer *maskLayer;
     
-    CGRect pathBounds;
     CGRect totoalPathBounds;
-    CGFloat scale;
-    CGFloat scalePadding;
+    CGRect scaleRect;
+    CGFloat padding;
     
 }
 
@@ -55,13 +53,11 @@
     
     unSelectedLayer = [CAShapeLayer layer];
     selectedLayer = [CAShapeLayer layer];
-    selectedMaskLayer = [CALayer layer];
-    selectedMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
-    unSelectedMaskLayer = [CALayer layer];
-    unSelectedMaskLayer.backgroundColor = [UIColor blackColor].CGColor;
+    maskLayer = [CALayer layer];
+    maskLayer.backgroundColor = [UIColor blackColor].CGColor;
     
-    [self.layer addSublayer:unSelectedLayer];
     [self.layer addSublayer:selectedLayer];
+    [self.layer addSublayer:unSelectedLayer];
     
     [self setNeedsLayout];
     
@@ -72,191 +68,92 @@
     
     [super layoutSubviews];
     
-    pathBounds = _path.bounds;
-    [_path applyTransform:CGAffineTransformMakeTranslation(-pathBounds.origin.x,-pathBounds.origin.y)];
-    pathBounds = _path.bounds;
+    CGRect pathBounds = _path.bounds;
     
+    //确定绘图区域
     CGRect rect = self.bounds;
-    CGRect drawRect = CGRectMake(_insert.left,_insert.top, rect.size.width-(_insert.left+_insert.right), rect.size.height-(_insert.top+_insert.bottom));
-    if (_padding*(_number-1) >= drawRect.size.width) {
+    CGRect drawRect = CGRectMake(_insert.left,_insert.top, rect.size.width -(_insert.left + _insert.right), rect.size.height - (_insert.top + _insert.bottom));
+    if (_padding * (_number - 1) >= drawRect.size.width) {
         return;
     }
     
     //缩放百分比
-    CGFloat padding;
-    if (_alignment == AJScoreViewAlignmentCenter) {
-        padding = 0.0;
+    padding = _padding;
+    CGFloat scale;
+    if ((drawRect.size.width - (_number - 1) * padding) / pathBounds.size.width / _number > (drawRect.size.height / pathBounds.size.height)) {
+        scale = drawRect.size.height / pathBounds.size.height;
     }else{
-        padding = _padding;
+        scale = (drawRect.size.width - (_number - 1) * padding) / pathBounds.size.width / _number;
     }
-    if ((drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number > (drawRect.size.height/pathBounds.size.height)) {
-        scale = drawRect.size.height/pathBounds.size.height;
-    }else{
-        scale = (drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number;
+    if (_alignment == AJScoreViewAlignmentCenter) {
+        padding = (drawRect.size.width - pathBounds.size.width * scale * _number) / (_number - 1);
     }
     
-    //确定间隙
-    CGFloat scalePadding;
-    if (_alignment == AJScoreViewAlignmentCenter) {
-        scalePadding = (drawRect.size.width-pathBounds.size.width*scale*_number)/(_number-1)/scale;
-    }else{
-        scalePadding = _padding/scale;
-    }
+    //复制平移操作
+    UIBezierPath *scalePath = [UIBezierPath bezierPath];
+    [scalePath appendPath:_path];
+    [scalePath applyTransform:CGAffineTransformMakeScale(scale,scale)];
+    scaleRect = scalePath.bounds;
     
     UIBezierPath *totalPath = [UIBezierPath bezierPath];
     for (int i=0; i<_number; i++) {
         
         UIBezierPath *copyPath = [UIBezierPath bezierPath];
-        [copyPath appendPath:_path];
-        [copyPath applyTransform:CGAffineTransformMakeTranslation((pathBounds.size.width+scalePadding)*i,0)];
-        
+        [copyPath appendPath:scalePath];
+        [copyPath applyTransform:CGAffineTransformMakeTranslation((scaleRect.size.width+padding)*i,0)];
         [totalPath appendPath:copyPath];
     }
     
-    [totalPath applyTransform:CGAffineTransformMakeScale(scale,scale)];
-    
-    //修正当前Alignment的x,y值
-    CGFloat refixY = (drawRect.size.height-totalPath.bounds.size.height)/2.0+drawRect.origin.y;
-    CGFloat refixX;
+    //修正origin的x，y值, 使path位置居中
+    CGRect totalPathRect = totalPath.bounds;
+    CGFloat x;
     if (_alignment == AJScoreViewAlignmentRight) {
-        refixX = drawRect.size.width - totalPath.bounds.size.width+drawRect.origin.x;
-    }else{
-        refixX = drawRect.origin.x;
+        x = drawRect.origin.x + drawRect.size.width - totalPathRect.origin.x - totalPathRect.size.width;
+    }else {
+        x = drawRect.origin.x - totalPathRect.origin.x;
     }
-    [totalPath applyTransform:CGAffineTransformMakeTranslation(refixX,refixY)];
+    CGFloat y = (drawRect.size.height - totalPathRect.size.height) / 2.0 + drawRect.origin.y;
+    y = y - totalPathRect.origin.y;
+    [totalPath applyTransform:CGAffineTransformMakeTranslation(x, y)];
+    totoalPathBounds = totalPath.bounds;
     
     //确定背景颜色
     unSelectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
     unSelectedLayer.path = totalPath.CGPath;
-//    unSelectedLayer.fillColor = _unselectedColor.CGColor;
-    unSelectedLayer.fillColor = _selectedColor.CGColor;
-    
+    unSelectedLayer.fillColor = _unselectedColor.CGColor;
+
     selectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
     selectedLayer.path = totalPath.CGPath;
-//    selectedLayer.fillColor = _selectedColor.CGColor;
-    selectedLayer.fillColor = _unselectedColor.CGColor;
+    selectedLayer.fillColor = _selectedColor.CGColor;
     
-    //取值的范围
+    //确定遮罩层的大小
+    [self updateMaskLayersWithAnimation:NO];
+    
+}
+
+- (void)updateMaskLayersWithAnimation:(BOOL)animation {
+    
     CGFloat numberOfSharp = _value/((_maximumValue-_minimumValue)/_number);
     NSInteger integer = floor(numberOfSharp);
     CGFloat remainValue = numberOfSharp - integer;
-    CGRect totoalPathBounds = totalPath.bounds;
-    CGFloat selectW = (pathBounds.size.width*integer + scalePadding*integer + pathBounds.size.width*remainValue)*scale;
+    CGFloat selectW = scaleRect.size.width*integer + padding*integer + scaleRect.size.width*remainValue;
     CGRect selectRect;
     if (_alignment == AJScoreViewAlignmentRight){
-        selectRect = CGRectMake(totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
+        selectRect = CGRectMake(totoalPathBounds.origin.x, 0, totoalPathBounds.size.width-selectW, self.bounds.size.height);
     }else{
-        selectRect = CGRectMake(selectW+totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
+        selectRect = CGRectMake(selectW+totoalPathBounds.origin.x, 0, totoalPathBounds.size.width-selectW, self.bounds.size.height);
     }
     
-    selectedMaskLayer.frame = selectRect;
-    selectedLayer.mask = selectedMaskLayer;
+    if (animation) {
+        [CATransaction setDisableActions:NO];
+    }else {
+        [CATransaction setDisableActions:YES];
+    }
     
-    
-    
-    //确定遮罩层的大小
-//    [self updateMaskLayers];
-    
-}
-
-- (void)updateMaskLayers {
-    
-    
-    
-    
-    
+    maskLayer.frame = selectRect;
+    unSelectedLayer.mask = maskLayer;
     
 }
-
-#pragma mark - Draw methods
-//- (void)drawRect:(CGRect)rect {
-//    // Drawing code
-//    
-//    CGRect pathBounds;
-//    if (_path) {
-//        
-//        pathBounds = _path.bounds;
-//        [_path applyTransform:CGAffineTransformMakeTranslation(-pathBounds.origin.x,-pathBounds.origin.y)];
-//        pathBounds = _path.bounds;
-//        
-//    }else{
-//        return;
-//    }
-//    
-//    CGRect drawRect = CGRectMake(_insert.left,_insert.top, rect.size.width-(_insert.left+_insert.right), rect.size.height-(_insert.top+_insert.bottom));
-//    if (_padding*(_number-1) >= drawRect.size.width) {
-//        return;
-//    }
-//    
-//    //缩放百分比
-//    CGFloat scale;
-//    CGFloat padding;
-//    if (_alignment == AJScoreViewAlignmentCenter) {
-//        padding = 0.0;
-//    }else{
-//        padding = _padding;
-//    }
-//    if ((drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number > (drawRect.size.height/pathBounds.size.height)) {
-//        scale = drawRect.size.height/pathBounds.size.height;
-//    }else{
-//        scale = (drawRect.size.width-(_number-1)*padding)/pathBounds.size.width/_number;
-//    }
-//    //确定间隙
-//    CGFloat scalePadding;
-//    if (_alignment == AJScoreViewAlignmentCenter) {
-//        scalePadding = (drawRect.size.width-pathBounds.size.width*scale*_number)/(_number-1)/scale;
-//    }else{
-//        scalePadding = _padding/scale;
-//    }
-//    
-//    UIBezierPath *totalPath = [UIBezierPath bezierPath];
-//    for (int i=0; i<_number; i++) {
-//        
-//        UIBezierPath *copyPath = [UIBezierPath bezierPath];
-//        [copyPath appendPath:_path];
-//        [copyPath applyTransform:CGAffineTransformMakeTranslation((pathBounds.size.width+scalePadding)*i,0)];
-//        
-//        [totalPath appendPath:copyPath];
-//    }
-//    
-//    [totalPath applyTransform:CGAffineTransformMakeScale(scale,scale)];
-//    //修正当前的x,y值
-//    CGFloat refixY = (drawRect.size.height-totalPath.bounds.size.height)/2.0+drawRect.origin.y;
-//    CGFloat refixX;
-//    if (_alignment == AJScoreViewAlignmentRight) {
-//        refixX = drawRect.size.width - totalPath.bounds.size.width+drawRect.origin.x;
-//    }else{
-//        refixX = drawRect.origin.x;
-//    }
-//    [totalPath applyTransform:CGAffineTransformMakeTranslation(refixX,refixY)];
-//    [_unselectedColor setFill];
-//    [totalPath fill];
-//    
-//    //取值的范围
-//    CGFloat numberOfSharp = _value/((_maximumValue-_minimumValue)/_number);
-//    NSInteger integer = floor(numberOfSharp);
-//    CGFloat remainValue = numberOfSharp - integer;
-//    CGRect totoalPathBounds = totalPath.bounds;
-//    CGFloat selectW = (pathBounds.size.width*integer + scalePadding*integer + pathBounds.size.width*remainValue)*scale;
-//    CGRect selectRect;
-//    if (_alignment == AJScoreViewAlignmentRight){
-//        selectRect = CGRectMake(totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
-//    }else{
-//        selectRect = CGRectMake(selectW+totoalPathBounds.origin.x, drawRect.origin.y+pathBounds.origin.y-0.5, totoalPathBounds.size.width-selectW, drawRect.size.height-2*pathBounds.origin.y+1.0);
-//    }
-//    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:selectRect];
-//    UIBezierPath* rectanglePath2 =[UIBezierPath bezierPath];
-//    [rectanglePath2 appendPath:rectanglePath];
-//    [totalPath appendPath:rectanglePath];
-//    [totalPath setUsesEvenOddFillRule:YES];
-//    [totalPath addClip];
-//    [totalPath appendPath:rectanglePath2];
-//    [totalPath setUsesEvenOddFillRule:YES];
-//    [totalPath addClip];
-//    [_selectedColor setFill];
-//    [totalPath fill];
-//    
-//}
 
 #pragma mark - Setter methods
 - (void)setFrame:(CGRect)frame{
@@ -315,7 +212,7 @@
 - (void)setMinimumValue:(CGFloat)minimumValue{
     if (_minimumValue != minimumValue && minimumValue <= _maximumValue) {
         _minimumValue = minimumValue;
-        [self setNeedsLayout];
+        [self updateMaskLayersWithAnimation:NO];
     }
     
 }
@@ -323,27 +220,32 @@
 - (void)setMaximumValue:(CGFloat)maximumValue{
     if (_maximumValue != maximumValue && maximumValue >= _minimumValue) {
         _maximumValue = maximumValue;
-        [self setNeedsLayout];
+        [self updateMaskLayersWithAnimation:NO];
+    }
+}
+
+- (void)updateValue:(CGFloat)value {
+    if (value<_minimumValue) {
+        _value = _minimumValue;
+    }else if(value > _maximumValue){
+        _value = _maximumValue;
+    }else{
+        _value = value;
     }
 }
 
 - (void)setValue:(CGFloat)value{
     if (_value != value) {
-        if (value<_minimumValue) {
-            _value = _minimumValue;
-        }else if(value > _maximumValue){
-            _value = _maximumValue;
-        }else{
-            _value = value;
-        }
-        [self setNeedsLayout];
+        [self updateValue:value];
+        [self updateMaskLayersWithAnimation:NO];
     }
 }
 
 - (void)setValue:(CGFloat)value animated:(BOOL)animated{
     if(_value != value){
         if (animated) {
-            [self setValue:value];
+            [self updateValue:value];
+            [self updateMaskLayersWithAnimation:YES];
         }else{
             [self setValue:value];
         }
