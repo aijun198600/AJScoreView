@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+    AJScoreView is a custoum view for display evaluation score, it can change sharpe with star, heart and other custom path. It also support many arguments, like color, border, number etc. It support storyboard and edit event.
                        DESC
 
   s.homepage         = 'https://github.com/aijun198600/AJScoreView'
