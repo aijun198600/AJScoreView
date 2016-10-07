@@ -37,6 +37,7 @@ Pod::Spec.new do |s|
   # }
 
   s.public_header_files = 'AJScoreView/Classes/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.frameworks = 'UIKit'
+  s.requires_arc = true
   # s.dependency 'AFNetworking', '~> 2.3'
 end

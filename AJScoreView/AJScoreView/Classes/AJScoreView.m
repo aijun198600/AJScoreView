@@ -16,7 +16,7 @@
     
     CGRect totoalPathBounds;
     CGRect scaleRect;
-    CGFloat padding;
+    CGFloat realPadding;
     
 }
 
@@ -82,15 +82,15 @@
     }
     
     //缩放百分比
-    padding = _padding + 2 * _borderWidth;
+    realPadding = _padding + 2 * _borderWidth;
     CGFloat scale;
-    if ((drawRect.size.width - (_number - 1) * padding) / pathBounds.size.width / _number > (drawRect.size.height / pathBounds.size.height)) {
+    if ((drawRect.size.width - (_number - 1) * realPadding) / pathBounds.size.width / _number > (drawRect.size.height / pathBounds.size.height)) {
         scale = drawRect.size.height / pathBounds.size.height;
     }else{
-        scale = (drawRect.size.width - (_number - 1) * padding) / pathBounds.size.width / _number;
+        scale = (drawRect.size.width - (_number - 1) * realPadding) / pathBounds.size.width / _number;
     }
     if (_alignment == AJScoreViewAlignmentCenter) {
-        padding = (drawRect.size.width - pathBounds.size.width * scale * _number) / (_number - 1);
+        realPadding = (drawRect.size.width - pathBounds.size.width * scale * _number) / (_number - 1);
     }
     
     //复制平移操作
@@ -104,7 +104,7 @@
         
         UIBezierPath *copyPath = [UIBezierPath bezierPath];
         [copyPath appendPath:scalePath];
-        [copyPath applyTransform:CGAffineTransformMakeTranslation((scaleRect.size.width+padding)*i,0)];
+        [copyPath applyTransform:CGAffineTransformMakeTranslation((scaleRect.size.width+realPadding)*i,0)];
         [totalPath appendPath:copyPath];
     }
     
@@ -147,7 +147,7 @@
     CGFloat numberOfSharp = _value/((_maximumValue-_minimumValue)/_number);
     NSInteger integer = floor(numberOfSharp);
     CGFloat remainValue = numberOfSharp - integer;
-    CGFloat selectW = scaleRect.size.width*integer + padding*integer + scaleRect.size.width*remainValue;
+    CGFloat selectW = scaleRect.size.width*integer + realPadding*integer + scaleRect.size.width*remainValue;
     CGRect selectRect;
     if (_alignment == AJScoreViewAlignmentRight){
         selectRect = CGRectMake(totoalPathBounds.origin.x, 0, totoalPathBounds.size.width-selectW, self.bounds.size.height);
@@ -357,8 +357,8 @@
                 }
             }
             
-            NSInteger i = floor(selectW / (scaleRect.size.width + padding));
-            CGFloat remainValue = (selectW - i * (scaleRect.size.width + padding)) / scaleRect.size.width;
+            NSInteger i = floor(selectW / (scaleRect.size.width + realPadding));
+            CGFloat remainValue = (selectW - i * (scaleRect.size.width + realPadding)) / scaleRect.size.width;
             CGFloat value = i + remainValue;
             if (value != _value) {
                 self.value = i + remainValue;
