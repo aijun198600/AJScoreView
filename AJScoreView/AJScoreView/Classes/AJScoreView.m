@@ -44,11 +44,13 @@
     _value = _value?_value:_minimumValue;
     _number = _number?_number:5;
     _padding = _padding?_padding:2.0;
+    _insert = UIEdgeInsetsMake(2, 2, 2, 2);
     _type = _type?_type:AJScoreViewStarType;
     _path = _path?_path:[self obtainStarPath];
     _alignment = _alignment?_alignment:AJScoreViewAlignmentLeft;
-    _selectedColor = _selectedColor?_selectedColor:[UIColor yellowColor];
-    _unselectedColor = _unselectedColor?_unselectedColor:[UIColor grayColor];
+    _selectedFillColor = _selectedFillColor?_selectedFillColor:[UIColor yellowColor];
+    _unselectedFillColor = _unselectedFillColor?_unselectedFillColor:[UIColor grayColor];
+    _borderWidth = _borderWidth?_borderWidth:0.0;
     
     unSelectedLayer = [CAShapeLayer layer];
     selectedLayer = [CAShapeLayer layer];
@@ -119,11 +121,18 @@
     //确定背景颜色
     unSelectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
     unSelectedLayer.path = totalPath.CGPath;
-    unSelectedLayer.fillColor = _unselectedColor.CGColor;
+    unSelectedLayer.fillColor = _unselectedFillColor.CGColor;
 
     selectedLayer.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
     selectedLayer.path = totalPath.CGPath;
-    selectedLayer.fillColor = _selectedColor.CGColor;
+    selectedLayer.fillColor = _selectedFillColor.CGColor;
+    
+    if (_borderWidth > 0.0) {
+        unSelectedLayer.strokeColor = _unselectedBorderColor.CGColor;
+        unSelectedLayer.lineWidth = _borderWidth;
+        selectedLayer.strokeColor = _selectedBorderColor.CGColor;
+        selectedLayer.lineWidth = _borderWidth;
+    }
     
     //确定遮罩层的大小
     [self updateMaskLayersWithAnimation:NO];
@@ -263,16 +272,37 @@
     }
 }
 
-- (void)setSelectedColor:(UIColor *)selectedColor{
-    if (![_selectedColor isEqual:selectedColor]) {
-        _selectedColor = selectedColor;
-        [self setNeedsLayout];
+- (void)setSelectedFillColor:(UIColor *)selectedColor{
+    if (![_selectedFillColor isEqual:selectedColor]) {
+        _selectedFillColor = selectedColor;
+        selectedLayer.fillColor = _selectedFillColor.CGColor;
     }
 }
 
-- (void)setUnselectedColor:(UIColor *)unselectedColor{
-    if (![_unselectedColor isEqual:unselectedColor]) {
-        _unselectedColor = unselectedColor;
+- (void)setUnselectedFillColor:(UIColor *)unselectedColor{
+    if (![_unselectedFillColor isEqual:unselectedColor]) {
+        _unselectedFillColor = unselectedColor;
+        unSelectedLayer.fillColor = _unselectedFillColor.CGColor;
+    }
+}
+
+- (void)setSelectedBorderColor:(UIColor *)selectedBorderColor{
+    if (![_selectedBorderColor isEqual:selectedBorderColor]) {
+        _selectedBorderColor = selectedBorderColor;
+        selectedLayer.strokeColor = _selectedBorderColor.CGColor;
+    }
+}
+
+- (void)setUnselectedBorderColor:(UIColor *)unselectedBorderColor{
+    if (![_unselectedBorderColor isEqual:unselectedBorderColor]) {
+        _unselectedBorderColor = unselectedBorderColor;
+        unSelectedLayer.strokeColor = _unselectedBorderColor.CGColor;
+    }
+}
+
+- (void)setBorderWidth:(CGFloat)borderWidth {
+    if (_borderWidth != borderWidth) {
+        _borderWidth = borderWidth;
         [self setNeedsLayout];
     }
 }
