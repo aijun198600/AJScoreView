@@ -39,6 +39,9 @@
 #pragma mark - Data Init methods
 - (void)commonInit {
     
+    //默认不可编辑状态
+    self.enabled = NO;
+    
     _minimumValue = _minimumValue?_minimumValue:0.0;
     _maximumValue = _maximumValue?_maximumValue:5.0;
     _value = _value?_value:_minimumValue;
@@ -79,7 +82,7 @@
     }
     
     //缩放百分比
-    padding = _padding;
+    padding = _padding + 2 * _borderWidth;
     CGFloat scale;
     if ((drawRect.size.width - (_number - 1) * padding) / pathBounds.size.width / _number > (drawRect.size.height / pathBounds.size.height)) {
         scale = drawRect.size.height / pathBounds.size.height;
