@@ -141,6 +141,7 @@ scoreView.path = [self twitterPath];
 
 ### 文章说明
 [如何开发一个评分控件(一)](http://www.jianshu.com/p/ea74c10a03c2)
+
 [如何开发一个评分控件(二)](http://www.jianshu.com/p/58489bd07e78)
 
 
