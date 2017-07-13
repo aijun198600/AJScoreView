@@ -137,7 +137,7 @@ scoreView.path = [self twitterPath];
 
 - path
 
-当类型为AJScoreViewCustomType类型的时候，可以通过path赋予不同的形状，如果是星星或心型则会使用自带的path。并且只有先赋值type为AJScoreViewCustomType才能赋值path，否则赋值无效。建议使用PaintCode来画图生成Object-C代码。
+当类型为AJScoreViewCustomType类型的时候，可以通过path赋予不同的形状，如果是星星或心型则使用自带的path。并且只有先赋值type为AJScoreViewCustomType才能赋值path，否则赋值无效。建议使用PaintCode来画图生成Object-C代码。
 
 ### 文章说明
 [如何开发一个评分控件(一)](http://www.jianshu.com/p/ea74c10a03c2)
